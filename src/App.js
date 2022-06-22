@@ -8,8 +8,8 @@ const myPropertyAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 function App() {
 // CONNECTING
 const [accounts, setAccounts] = useState([]);
-const [address_recipient, setAddress_recipient] = useState("");
-// const [tokenURI, setTokenURI] = useState(""); // CAUTION: NOT TO BE CONFUSED WITH  the _setTokenURI method in the Soilidity contract
+const [addressRecipient, setAddressRecipient] = useState("");
+const [tokenURI, setTokenURI] = useState(""); // CAUTION: NOT TO BE CONFUSED WITH  the _setTokenURI method in the Soilidity contract
 
 async function connectAccounts() {
   if (window.ethereum) {
@@ -25,8 +25,7 @@ useEffect(() => {
 }, []);
 
 // MINTING
-// async function handleMint(address_recipient, tokenURI)
-async function handleMint(a_r) {
+async function handleMint(address_recipient, token_URI) {
   if (window.ethereum) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -36,8 +35,7 @@ async function handleMint(a_r) {
       signer
     );
     try {
-      // const response = await contract.mintNFT (address_recipient, tokenURI)
-      const response = await contract.mintNFT(a_r, 'https://gateway.pinata.cloud/ipfs/QmRveoxkUWxfvfGtnB9HGxVGmrdA1u4T4JZBbvZR91s1Vr')
+      const response = await contract.mintNFT(address_recipient, token_URI)
       console.log('response: ', response);
     } catch(err) {
       console.log('error: ', err);
@@ -52,16 +50,25 @@ async function handleMint(a_r) {
     <div className="App">
       <h1>Mint your property as an NFT!</h1>
       <form>
-        <h2>Input your wallet address then press "Mint"</h2>
+        <h2>Input your wallet address:</h2>
         <input
           type="text"
           placeholder="0x..."
-          onChange={(event) => setAddress_recipient(event.target.value)}
+          onChange={(event) => setAddressRecipient(event.target.value)}
         />
+        <h2>Input your Token's URI:</h2>
+        <input
+          classname = "uri-input"
+          style = {{width: "237px"}}
+          type ="text"
+          placeholder="Input IPFS URL"
+          onChange={(event) => setTokenURI(event.target.value)}
+        />
+        <h2>Now mint your NFT!</h2>
       </form>
       {accounts.length && (
         <div>
-          <button onClick={() => handleMint(address_recipient)}>Mint</button>
+          <button onClick={() => handleMint(addressRecipient, tokenURI)}>Mint</button>
         </div>
       )}
     </div>
